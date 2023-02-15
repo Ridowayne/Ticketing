@@ -27,3 +27,35 @@ const sendErrrorDev = (err, res) => {
         stack: err.stack,
     });
 };
+
+const sendErrorProd = (err, res) => {
+    if (err.isOperational) {
+        res.status(err.statusCode).json({
+            status: err.status,
+            message: err.message,
+        });
+    } else {
+        res.status(500).json({
+            status: 'fail',
+            error: err.code,
+            message: 'something went wrong!',
+        });
+    }
+};
+
+module.exports = (err, req, res, next) => {
+    err.statusCode = err.statusCode || 500;
+    err.status = err.status || 'error';
+
+    if (process.env.NODE_ENV === 'development') {
+        sendErrrorDev(err, res);
+    } else if (process.env.NODE_ENV === 'production') {
+        let error = { ...err };
+        if (error.name === 'castError') error = handleCastError(error);
+        if (error.code === 11000) error = handleDuplicateError(error);
+        if (error.name === 'validationError')
+            error = handleValidationError(error);
+
+        sendErrorProd(error, res);
+    }
+};

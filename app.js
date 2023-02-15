@@ -7,6 +7,7 @@ const compression = require('compression');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const routes = require('./routes/index');
+const errorHandler = require('./controllers/error.controler');
 const app = express();
 
 app.use(express.json());
@@ -30,4 +31,5 @@ app.all('/*', (req, res) => {
         message: `can not get ${req.originalUrl} on the server`,
     });
 });
+app.use(errorHandler);
 module.exports = app;
