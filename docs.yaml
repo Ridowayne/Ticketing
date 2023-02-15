@@ -1,0 +1,14 @@
+openapi: 3.0.2
+info:
+    title: ticketing server api
+    decription: This is a REST api application made express
+    contact: {}
+    version: '1.0'
+servers:
+    url: https://localhost:9000
+paths:
+components:
+tags:
+    - name: User
+    - name: Events
+    - name: Ticket
